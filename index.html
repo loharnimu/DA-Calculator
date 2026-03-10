@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WB DA Arrear Calculator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Framer Motion -->
+    <script>window.process = { env: { NODE_ENV: 'production' } };</script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <!-- jsPDF -->
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@latest/dist/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || typeof Babel === 'undefined') {
+                    var root = document.getElementById('root');
+                    if (root && !root.innerHTML.trim()) {
+                        root.innerHTML = '<div style="padding: 20px; color: red; font-family: sans-serif; text-align: center;">' +
+                            '<h1 style="font-size: 24px; margin-bottom: 10px;">Loading Error</h1>' +
+                            '<p style="font-size: 16px;">Required libraries (React, Babel, etc.) could not be loaded.</p>' +
+                            '<p style="font-size: 14px; color: #666;">Please ensure you have an active internet connection and try again.</p>' +
+                            '</div>';
+                    }
+                }
+            }, 3000);
+        });
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<script src="/_aistudio-iframe.js"></script><link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+</head>
+<body class="bg-slate-50">
+    <div id="root">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; color: #666;">
+            <div style="text-align: center;">
+                <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4f46e5; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div>
+                <p>Loading application...</p>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+        
+        // Robust library access with fallbacks
+        const MotionLib = window.Motion || window.FramerMotion || {};
+        const motion = MotionLib.motion || {
+            div: (props) => <div {...props} />,
+            button: (props) => <button {...props} />,
+            span: (props) => <span {...props} />,
+            h1: (props) => <h1 {...props} />,
+            h2: (props) => <h2 {...props} />,
+            h3: (props) => <h3 {...props} />,
+            p: (props) => <p {...props} />,
+            section: (props) => <section {...props} />,
+            nav: (props) => <nav {...props} />,
+            footer: (props) => <footer {...props} />,
+            header: (props) => <header {...props} />,
+            main: (props) => <main {...props} />,
+            article: (props) => <article {...props} />,
+            aside: (props) => <aside {...props} />,
+            ul: (props) => <ul {...props} />,
+            li: (props) => <li {...props} />,
+            a: (props) => <a {...props} />,
+            img: (props) => <img {...props} />,
+            svg: (props) => <svg {...props} />,
+            path: (props) => <path {...props} />,
+            circle: (props) => <circle {...props} />,
+            rect: (props) => <rect {...props} />,
+            line: (props) => <line {...props} />,
+            polyline: (props) => <polyline {...props} />,
+            polygon: (props) => <polygon {...props} />,
+            ellipse: (props) => <ellipse {...props} />,
+            g: (props) => <g {...props} />,
+            defs: (props) => <defs {...props} />,
+            linearGradient: (props) => <linearGradient {...props} />,
+            stop: (props) => <stop {...props} />,
+            clipPath: (props) => <clipPath {...props} />,
+            mask: (props) => <mask {...props} />,
+            pattern: (props) => <pattern {...props} />,
+            filter: (props) => <filter {...props} />,
+            feGaussianBlur: (props) => <feGaussianBlur {...props} />,
+            feColorMatrix: (props) => <feColorMatrix {...props} />,
+            feOffset: (props) => <feOffset {...props} />,
+            feBlend: (props) => <feBlend {...props} />,
+            feComposite: (props) => <feComposite {...props} />,
+            feMerge: (props) => <feMerge {...props} />,
+            feMergeNode: (props) => <feMergeNode {...props} />,
+            feFlood: (props) => <feFlood {...props} />,
+            feMorphology: (props) => <feMorphology {...props} />,
+            feSpecularLighting: (props) => <feSpecularLighting {...props} />,
+            fePointLight: (props) => <fePointLight {...props} />,
+            feSpotLight: (props) => <feSpotLight {...props} />,
+            feDistantLight: (props) => <feDistantLight {...props} />,
+            feDisplacementMap: (props) => <feDisplacementMap {...props} />,
+            feTurbulence: (props) => <feTurbulence {...props} />,
+            feComponentTransfer: (props) => <feComponentTransfer {...props} />,
+            feFuncR: (props) => <feFuncR {...props} />,
+            feFuncG: (props) => <feFuncG {...props} />,
+            feFuncB: (props) => <feFuncB {...props} />,
+            feFuncA: (props) => <feFuncA {...props} />,
+            feTile: (props) => <feTile {...props} />,
+            feImage: (props) => <feImage {...props} />,
+            feConvolveMatrix: (props) => <feConvolveMatrix {...props} />,
+            feDiffuseLighting: (props) => <feDiffuseLighting {...props} />,
+        };
+        const AnimatePresence = MotionLib.AnimatePresence || (({children}) => children);
+
+        const createIconComponent = (name) => {
+            return ({ size = 24, className = "", color = "currentColor", strokeWidth = 2, ...props }) => {
+                const iconRef = React.useRef(null);
+                
+                React.useEffect(() => {
+                    if (window.lucide && window.lucide.icons && iconRef.current) {
+                        iconRef.current.innerHTML = '';
+                        let iconData = window.lucide.icons[name];
+                        if (!iconData) {
+                            const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
+                            iconData = window.lucide.icons[pascalName];
+                        }
+                        if (!iconData) {
+                            const camelName = name.charAt(0).toLowerCase() + name.slice(1);
+                            iconData = window.lucide.icons[camelName];
+                        }
+                        
+                        if (iconData) {
+                            const tempDiv = document.createElement('div');
+                            const kebabName = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                            tempDiv.innerHTML = `<i data-lucide="${kebabName}"></i>`;
+                            
+                            window.lucide.createIcons({
+                                icons: { [name]: iconData, [kebabName]: iconData },
+                                nameAttr: 'data-lucide',
+                                root: tempDiv,
+                                attrs: {
+                                    class: className,
+                                    width: size,
+                                    height: size,
+                                    stroke: color,
+                                    'stroke-width': strokeWidth
+                                }
+                            });
+                            
+                            if (tempDiv.firstChild && tempDiv.firstChild.tagName.toLowerCase() === 'svg') {
+                                iconRef.current.appendChild(tempDiv.firstChild);
+                            }
+                        } else {
+                            iconRef.current.innerHTML = `<div style="width: ${size}px; height: ${size}px; border: 1px solid #ccc; border-radius: 4px; display: inline-block;"></div>`;
+                        }
+                    }
+                }, [size, className, color, strokeWidth]);
+
+                return <span ref={iconRef} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', verticalAlign: 'middle' }} {...props}></span>;
+            };
+        };
+
+        const Calculator = createIconComponent('Calculator');
+        const Calendar = createIconComponent('Calendar');
+        const IndianRupee = createIconComponent('IndianRupee');
+        const Info = createIconComponent('Info');
+        const Plus = createIconComponent('Plus');
+        const Trash2 = createIconComponent('Trash2');
+        const ArrowRight = createIconComponent('ArrowRight');
+        const ShieldCheck = createIconComponent('ShieldCheck');
+        const User = createIconComponent('User');
+        const Copyright = createIconComponent('Copyright');
+        const Download = createIconComponent('Download');
+        const Mail = createIconComponent('Mail');
+        const BookOpen = createIconComponent('BookOpen');
+        const ChevronDown = createIconComponent('ChevronDown');
+        const RotateCcw = createIconComponent('RotateCcw');
+
+        const daData = [
+            { month: 4, year: 2008, state: 2, aicpi: 12 },
+            { month: 5, year: 2008, state: 2, aicpi: 12 },
+            { month: 6, year: 2008, state: 6, aicpi: 12 },
+            { month: 7, year: 2008, state: 6, aicpi: 16 },
+            { month: 8, year: 2008, state: 6, aicpi: 16 },
+            { month: 9, year: 2008, state: 6, aicpi: 16 },
+            { month: 10, year: 2008, state: 6, aicpi: 16 },
+            { month: 11, year: 2008, state: 9, aicpi: 16 },
+            { month: 12, year: 2008, state: 9, aicpi: 16 },
+            { month: 1, year: 2009, state: 9, aicpi: 22 },
+            { month: 2, year: 2009, state: 9, aicpi: 22 },
+            { month: 3, year: 2009, state: 12, aicpi: 22 },
+            { month: 4, year: 2009, state: 16, aicpi: 22 },
+            { month: 5, year: 2009, state: 16, aicpi: 22 },
+            { month: 6, year: 2009, state: 16, aicpi: 22 },
+            { month: 7, year: 2009, state: 16, aicpi: 27 },
+            { month: 8, year: 2009, state: 16, aicpi: 27 },
+            { month: 9, year: 2009, state: 16, aicpi: 27 },
+            { month: 10, year: 2009, state: 16, aicpi: 27 },
+            { month: 11, year: 2009, state: 16, aicpi: 27 },
+            { month: 12, year: 2009, state: 22, aicpi: 27 },
+            { month: 1, year: 2010, state: 22, aicpi: 35 },
+            { month: 2, year: 2010, state: 22, aicpi: 35 },
+            { month: 3, year: 2010, state: 22, aicpi: 35 },
+            { month: 4, year: 2010, state: 27, aicpi: 35 },
+            { month: 5, year: 2010, state: 27, aicpi: 35 },
+            { month: 6, year: 2010, state: 27, aicpi: 35 },
+            { month: 7, year: 2010, state: 27, aicpi: 45 },
+            { month: 8, year: 2010, state: 27, aicpi: 45 },
+            { month: 9, year: 2010, state: 27, aicpi: 45 },
+            { month: 10, year: 2010, state: 27, aicpi: 45 },
+            { month: 11, year: 2010, state: 27, aicpi: 45 },
+            { month: 12, year: 2010, state: 35, aicpi: 45 },
+            { month: 1, year: 2011, state: 35, aicpi: 51 },
+            { month: 2, year: 2011, state: 35, aicpi: 51 },
+            { month: 3, year: 2011, state: 35, aicpi: 51 },
+            { month: 4, year: 2011, state: 35, aicpi: 51 },
+            { month: 5, year: 2011, state: 35, aicpi: 51 },
+            { month: 6, year: 2011, state: 35, aicpi: 51 },
+            { month: 7, year: 2011, state: 35, aicpi: 58 },
+            { month: 8, year: 2011, state: 35, aicpi: 58 },
+            { month: 9, year: 2011, state: 35, aicpi: 58 },
+            { month: 10, year: 2011, state: 35, aicpi: 58 },
+            { month: 11, year: 2011, state: 35, aicpi: 58 },
+            { month: 12, year: 2011, state: 35, aicpi: 58 },
+            { month: 1, year: 2012, state: 45, aicpi: 65 },
+            { month: 2, year: 2012, state: 45, aicpi: 65 },
+            { month: 3, year: 2012, state: 45, aicpi: 65 },
+            { month: 4, year: 2012, state: 45, aicpi: 65 },
+            { month: 5, year: 2012, state: 45, aicpi: 65 },
+            { month: 6, year: 2012, state: 45, aicpi: 65 },
+            { month: 7, year: 2012, state: 45, aicpi: 72 },
+            { month: 8, year: 2012, state: 45, aicpi: 72 },
+            { month: 9, year: 2012, state: 45, aicpi: 72 },
+            { month: 10, year: 2012, state: 45, aicpi: 72 },
+            { month: 11, year: 2012, state: 45, aicpi: 72 },
+            { month: 12, year: 2012, state: 45, aicpi: 72 },
+            { month: 1, year: 2013, state: 52, aicpi: 80 },
+            { month: 2, year: 2013, state: 52, aicpi: 80 },
+            { month: 3, year: 2013, state: 52, aicpi: 80 },
+            { month: 4, year: 2013, state: 52, aicpi: 80 },
+            { month: 5, year: 2013, state: 52, aicpi: 80 },
+            { month: 6, year: 2013, state: 52, aicpi: 80 },
+            { month: 7, year: 2013, state: 52, aicpi: 90 },
+            { month: 8, year: 2013, state: 52, aicpi: 90 },
+            { month: 9, year: 2013, state: 52, aicpi: 90 },
+            { month: 10, year: 2013, state: 52, aicpi: 90 },
+            { month: 11, year: 2013, state: 52, aicpi: 90 },
+            { month: 12, year: 2013, state: 52, aicpi: 90 },
+            { month: 1, year: 2014, state: 58, aicpi: 100 },
+            { month: 2, year: 2014, state: 58, aicpi: 100 },
+            { month: 3, year: 2014, state: 58, aicpi: 100 },
+            { month: 4, year: 2014, state: 58, aicpi: 100 },
+            { month: 5, year: 2014, state: 58, aicpi: 100 },
+            { month: 6, year: 2014, state: 58, aicpi: 100 },
+            { month: 7, year: 2014, state: 58, aicpi: 107 },
+            { month: 8, year: 2014, state: 58, aicpi: 107 },
+            { month: 9, year: 2014, state: 58, aicpi: 107 },
+            { month: 10, year: 2014, state: 58, aicpi: 107 },
+            { month: 11, year: 2014, state: 58, aicpi: 107 },
+            { month: 12, year: 2014, state: 58, aicpi: 107 },
+            { month: 1, year: 2015, state: 65, aicpi: 113 },
+            { month: 2, year: 2015, state: 65, aicpi: 113 },
+            { month: 3, year: 2015, state: 65, aicpi: 113 },
+            { month: 4, year: 2015, state: 65, aicpi: 113 },
+            { month: 5, year: 2015, state: 65, aicpi: 113 },
+            { month: 6, year: 2015, state: 65, aicpi: 113 },
+            { month: 7, year: 2015, state: 65, aicpi: 119 },
+            { month: 8, year: 2015, state: 65, aicpi: 119 },
+            { month: 9, year: 2015, state: 65, aicpi: 119 },
+            { month: 10, year: 2015, state: 65, aicpi: 119 },
+            { month: 11, year: 2015, state: 65, aicpi: 119 },
+            { month: 12, year: 2015, state: 65, aicpi: 119 },
+            { month: 1, year: 2016, state: 75, aicpi: 125 },
+            { month: 2, year: 2016, state: 75, aicpi: 125 },
+            { month: 3, year: 2016, state: 75, aicpi: 125 },
+            { month: 4, year: 2016, state: 75, aicpi: 125 },
+            { month: 5, year: 2016, state: 75, aicpi: 125 },
+            { month: 6, year: 2016, state: 75, aicpi: 125 },
+            { month: 7, year: 2016, state: 75, aicpi: 132 },
+            { month: 8, year: 2016, state: 75, aicpi: 132 },
+            { month: 9, year: 2016, state: 75, aicpi: 132 },
+            { month: 10, year: 2016, state: 75, aicpi: 132 },
+            { month: 11, year: 2016, state: 75, aicpi: 132 },
+            { month: 12, year: 2016, state: 75, aicpi: 132 },
+            { month: 1, year: 2017, state: 85, aicpi: 136 },
+            { month: 2, year: 2017, state: 85, aicpi: 136 },
+            { month: 3, year: 2017, state: 85, aicpi: 136 },
+            { month: 4, year: 2017, state: 85, aicpi: 136 },
+            { month: 5, year: 2017, state: 85, aicpi: 136 },
+            { month: 6, year: 2017, state: 85, aicpi: 136 },
+            { month: 7, year: 2017, state: 85, aicpi: 139 },
+            { month: 8, year: 2017, state: 85, aicpi: 139 },
+            { month: 9, year: 2017, state: 85, aicpi: 139 },
+            { month: 10, year: 2017, state: 85, aicpi: 139 },
+            { month: 11, year: 2017, state: 85, aicpi: 139 },
+            { month: 12, year: 2017, state: 85, aicpi: 139 },
+            { month: 1, year: 2018, state: 100, aicpi: 142 },
+            { month: 2, year: 2018, state: 100, aicpi: 142 },
+            { month: 3, year: 2018, state: 100, aicpi: 142 },
+            { month: 4, year: 2018, state: 100, aicpi: 142 },
+            { month: 5, year: 2018, state: 100, aicpi: 142 },
+            { month: 6, year: 2018, state: 100, aicpi: 142 },
+            { month: 7, year: 2018, state: 100, aicpi: 148 },
+            { month: 8, year: 2018, state: 100, aicpi: 148 },
+            { month: 9, year: 2018, state: 100, aicpi: 148 },
+            { month: 10, year: 2018, state: 100, aicpi: 148 },
+            { month: 11, year: 2018, state: 100, aicpi: 148 },
+            { month: 12, year: 2018, state: 100, aicpi: 148 },
+            { month: 1, year: 2019, state: 125, aicpi: 154 },
+            { month: 2, year: 2019, state: 125, aicpi: 154 },
+            { month: 3, year: 2019, state: 125, aicpi: 154 },
+            { month: 4, year: 2019, state: 125, aicpi: 154 },
+            { month: 5, year: 2019, state: 125, aicpi: 154 },
+            { month: 6, year: 2019, state: 125, aicpi: 154 },
+            { month: 7, year: 2019, state: 125, aicpi: 164 },
+            { month: 8, year: 2019, state: 125, aicpi: 164 },
+            { month: 9, year: 2019, state: 125, aicpi: 164 },
+            { month: 10, year: 2019, state: 125, aicpi: 164 },
+            { month: 11, year: 2019, state: 125, aicpi: 164 },
+            { month: 12, year: 2019, state: 125, aicpi: 164 },
+        ];
+
+        const toProperCase = (str) => {
+            return str.replace(/\w\S*/g, (txt) => {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        };
+
+        function App() {
+            const [view, setView] = useState('home');
+            const [userName, setUserName] = useState('');
+            const [isAboutOpen, setIsAboutOpen] = useState(false);
+            const [basicPay, setBasicPay] = useState(7000);
+            const [joinDate, setJoinDate] = useState('2008-04-01');
+            const [isRetiredBetween, setIsRetiredBetween] = useState('');
+            const [retirementDate, setRetirementDate] = useState('');
+            const [increments, setIncrements] = useState({});
+            const [firstSalaryMonth, setFirstSalaryMonth] = useState('');
+            const [breakdownData, setBreakdownData] = useState([]);
+            const [isCalculated, setIsCalculated] = useState(false);
+            const [customIncrements, setCustomIncrements] = useState([]);
+            const [newIncDate, setNewIncDate] = useState('');
+            const [newIncType, setNewIncType] = useState('single_increment');
+
+            const addCustomIncrement = () => {
+                if (!newIncDate || !newIncType) return;
+                setCustomIncrements(prev => [
+                    ...prev, 
+                    { id: Date.now().toString(), date: newIncDate, type: newIncType }
+                ]);
+                setNewIncDate('');
+                setNewIncType('single_increment');
+                setIsCalculated(false);
+            };
+
+            const removeCustomIncrement = (id) => {
+                setCustomIncrements(prev => prev.filter(inc => inc.id !== id));
+                setIsCalculated(false);
+            };
+
+            const generateTimeline = () => {
+                if (!joinDate) return [];
+                const join = new Date(joinDate);
+                const refDate = new Date('2008-04-01');
+                
+                let startYear = 2008;
+                if (join > refDate) {
+                    startYear = join.getFullYear();
+                }
+
+                let endYear = 2019;
+                let endMonth = 12;
+
+                if (join <= refDate && isRetiredBetween === 'yes') {
+                    if (!retirementDate) return [];
+                    const retDate = new Date(retirementDate);
+                    endYear = retDate.getFullYear();
+                    endMonth = retDate.getMonth() + 1;
+                }
+
+                const dates = new Set();
+                let initialDateStr = '2008-04-01';
+                if (join > refDate) {
+                    let m = join.getMonth() + 1;
+                    let y = join.getFullYear();
+                    if (firstSalaryMonth) {
+                        const selectedMonth = parseInt(firstSalaryMonth, 10);
+                        if (selectedMonth < m) y += 1;
+                        m = selectedMonth;
+                    }
+                    initialDateStr = `${y}-${m.toString().padStart(2, '0')}-01`;
+                }
+                dates.add(initialDateStr);
+                
+                for (let y = startYear; y <= endYear; y++) {
+                    const julyDate = new Date(y, 6, 1);
+                    const startDate = new Date(initialDateStr);
+                    if (julyDate > startDate && (y < endYear || (y === endYear && endMonth >= 7))) {
+                        dates.add(`${y}-07-01`);
+                    }
+                }
+
+                customIncrements.forEach(inc => {
+                    const d = new Date(inc.date);
+                    const start = new Date(initialDateStr);
+                    const end = new Date(endYear, endMonth - 1, 31);
+                    if (d >= start && d <= end) dates.add(inc.date);
+                });
+
+                return Array.from(dates).sort();
+            };
+
+            const paySeries = useMemo(() => {
+                const timeline = generateTimeline();
+                if (timeline.length === 0) return {};
+
+                const series = {};
+                let currentPay = Number(basicPay) || 0;
+                const initialDate = timeline[0];
+                series[initialDate] = currentPay;
+
+                for (let i = 1; i < timeline.length; i++) {
+                    const date = timeline[i];
+                    const customInc = customIncrements.find(inc => inc.date === date);
+                    let increase = 0;
+                    
+                    if (customInc) {
+                        if (customInc.type === 'single_increment') {
+                            increase = Math.ceil(Math.floor(currentPay * 0.03) / 10) * 10;
+                        } else if (customInc.type === 'double_increment') {
+                            increase = Math.ceil(Math.floor(currentPay * 0.06) / 10) * 10;
+                        }
+                    } else if (date.endsWith('-07-01')) {
+                        const controllingDate = timeline[i - 1];
+                        const incrementType = increments[controllingDate];
+                        if (incrementType === 'single_increment') {
+                            increase = Math.ceil(Math.floor(currentPay * 0.03) / 10) * 10;
+                        } else if (incrementType === 'double_increment') {
+                            increase = Math.ceil(Math.floor(currentPay * 0.06) / 10) * 10;
+                        }
+                    }
+                    currentPay += increase;
+                    series[date] = currentPay;
+                }
+                return series;
+            }, [basicPay, increments, customIncrements, joinDate, isRetiredBetween, retirementDate, firstSalaryMonth]);
+
+            const handleCalculate = () => {
+                if (!basicPay || isNaN(Number(basicPay))) {
+                    alert("Please enter a valid Basic Pay");
+                    return;
+                }
+                const [joinYearStr, joinMonthStr] = joinDate.split('-');
+                const joinYear = parseInt(joinYearStr, 10);
+                const joinMonth = parseInt(joinMonthStr, 10);
+                let startYear = joinYear;
+                let startMonth = joinMonth;
+                if (new Date(joinDate) > new Date('2008-04-01') && firstSalaryMonth) {
+                    const selectedMonth = parseInt(firstSalaryMonth, 10);
+                    if (selectedMonth < joinMonth) startYear += 1;
+                    startMonth = selectedMonth;
+                }
+
+                const getPayForMonth = (m, y) => {
+                    const currentMs = new Date(y, m - 1, 1).getTime();
+                    const timeline = Object.keys(paySeries).sort();
+                    let applicablePay = paySeries[timeline[0]] || Number(basicPay);
+                    for (const dateStr of timeline) {
+                        const [yStr, mStr, dStr] = dateStr.split('-');
+                        const changeDate = new Date(Number(yStr), Number(mStr) - 1, Number(dStr));
+                        if (changeDate.getTime() <= currentMs) applicablePay = paySeries[dateStr];
+                        else break;
+                    }
+                    return applicablePay;
+                };
+
+                const newBreakdown = [];
+                for (const data of daData) {
+                    if (new Date(joinDate) <= new Date('2008-04-01') && isRetiredBetween === 'yes' && retirementDate) {
+                        const retDate = new Date(retirementDate);
+                        const dataDate = new Date(data.year, data.month - 1, 1);
+                        if (dataDate > retDate) continue;
+                    }
+                    if (data.year > startYear || (data.year === startYear && data.month >= startMonth)) {
+                        const bp = getPayForMonth(data.month, data.year);
+                        const diffPercent = data.aicpi - data.state;
+                        const arrearForMonth = Math.round(bp * (diffPercent / 100));
+                        newBreakdown.push({ ...data, basicPay: bp, diffPercent, arrearForMonth });
+                    }
+                }
+                setBreakdownData(newBreakdown);
+                setIsCalculated(true);
+            };
+
+            const handleBreakdownChange = (index, val) => {
+                const numVal = val === '' ? 0 : Number(val);
+                const newData = [...breakdownData];
+                for (let i = index; i < newData.length; i++) {
+                    const currentRow = newData[i];
+                    if (i > index && currentRow.month === 7) break;
+                    currentRow.basicPay = val === '' ? '' : numVal;
+                    currentRow.arrearForMonth = Math.round(numVal * (currentRow.diffPercent / 100));
+                }
+                setBreakdownData(newData);
+            };
+
+            const handleReset = () => {
+                setBasicPay(7000);
+                setJoinDate('2008-04-01');
+                setIsRetiredBetween('');
+                setRetirementDate('');
+                setIncrements({});
+                setFirstSalaryMonth('');
+                setBreakdownData([]);
+                setIsCalculated(false);
+                setCustomIncrements([]);
+                setNewIncDate('');
+                setNewIncType('single_increment');
+            };
+
+            const totalArrear = breakdownData.reduce((sum, row) => sum + row.arrearForMonth, 0);
+
+            const formatMonthYear = (month, year) => {
+                const date = new Date(year, month - 1);
+                return date.toLocaleString('default', { month: 'short', year: 'numeric' });
+            };
+
+            const downloadPDF = () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 40;
+
+                const periodStr = breakdownData.length > 0 
+                    ? `${formatMonthYear(breakdownData[0].month, breakdownData[0].year)} - ${formatMonthYear(breakdownData[breakdownData.length - 1].month, breakdownData[breakdownData.length - 1].year)}`
+                    : 'N/A';
+
+                const totalArrearStr = `Total Arrear: Rs. ${totalArrear.toLocaleString('en-IN')}`;
+                const totalMonthsStr = `Total Months: ${breakdownData.length}`;
+
+                const addHeader = () => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(18);
+                    doc.text('Total Outstanding Arrears', pageWidth / 2, 40, { align: 'center' });
+                    if (userName) {
+                        doc.setFontSize(14);
+                        doc.text(`Name: ${toProperCase(userName)}`, pageWidth / 2, 60, { align: 'center' });
+                    }
+                    doc.setFontSize(12);
+                    doc.text(`For West Bengal State Govt. Employees (ROPA-2009) from ${periodStr}`, pageWidth / 2, 80, { align: 'center' });
+                    doc.setFontSize(14);
+                    doc.text(`${totalArrearStr} for ${totalMonthsStr}`, pageWidth / 2, 105, { align: 'center' });
+                };
+
+                const addFooter = () => {
+                    const timestamp = new Date().toLocaleString('en-IN');
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+                    doc.setTextColor(100);
+                    const footerText = `This Tool Developed and Designed by ASMINJOY Generated on ${timestamp}`;
+                    doc.text(footerText, margin, pageHeight - 20);
+                };
+
+                const tableData = breakdownData.map(row => [
+                    formatMonthYear(row.month, row.year),
+                    row.basicPay.toLocaleString('en-IN'),
+                    `${row.state}%`,
+                    `${row.aicpi}%`,
+                    `${row.diffPercent}%`,
+                    row.arrearForMonth.toLocaleString('en-IN')
+                ]);
+
+                addHeader();
+
+                doc.autoTable({
+                    head: [['Month', 'Basic Pay', 'State DA', 'AICPI', 'Diff', 'Arrear (Rs.)']],
+                    body: tableData,
+                    startY: 130,
+                    margin: { top: 60, bottom: 40, left: margin, right: margin },
+                    didDrawPage: (data) => {
+                        addFooter();
+                    },
+                    headStyles: { fillColor: [79, 70, 229], textColor: 255, halign: 'center' },
+                    columnStyles: {
+                        0: { halign: 'center' },
+                        1: { halign: 'center' },
+                        2: { halign: 'center' },
+                        3: { halign: 'center' },
+                        4: { halign: 'center', textColor: [220, 38, 38], fontStyle: 'bold' },
+                        5: { halign: 'center' }
+                    },
+                    styles: { fontSize: 10, cellPadding: 5 },
+                    theme: 'grid'
+                });
+
+                doc.save(`DA_Arrear_${periodStr.replace(/ /g, '_')}.pdf`);
+            };
+
+            const downloadApp = async () => {
+                try {
+                    const response = await fetch('/index_standalone.html');
+                    if (!response.ok) throw new Error('Failed to fetch standalone app');
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'WB_DA_Arrear_Calculator.html';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } catch (error) {
+                    console.error('Download error:', error);
+                    alert('Could not download the app. Please try again.');
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50">
+                    <AnimatePresence mode="wait">
+                        {view === 'home' ? (
+                            <motion.div 
+                                key="home"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-50"
+                            >
+                                <div className="max-w-2xl w-full space-y-8 text-center">
+                                    <motion.div 
+                                        initial={{ scale: 0.8 }}
+                                        animate={{ scale: 1 }}
+                                        className="inline-flex p-4 bg-indigo-600 rounded-3xl shadow-xl shadow-indigo-200 mb-4"
+                                    >
+                                        <Calculator className="w-12 h-12 text-white" />
+                                    </motion.div>
+                                    
+                                    <div className="space-y-4">
+                                        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+                                            WB DA Arrear <span className="text-indigo-600">Calculator</span>
+                                        </h1>
+                                        <p className="text-lg text-slate-600 max-w-lg mx-auto leading-relaxed">
+                                            Calculate DA arrears for West Bengal Government Employees based on ROPA-2009. Accurate, fast, and easy to use.
+                                        </p>
+                                    </div>
+
+                                    <div className="max-w-md mx-auto space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                                        <div className="space-y-2 text-center">
+                                            <label htmlFor="user-name-input" className="block text-sm font-semibold text-slate-700 flex items-center justify-center gap-2">
+                                                <User className="w-4 h-4 text-indigo-500" />
+                                                Enter Your Name
+                                            </label>
+                                            <input
+                                                id="user-name-input"
+                                                type="text"
+                                                value={userName}
+                                                onChange={(e) => setUserName(toProperCase(e.target.value))}
+                                                placeholder="Enter Your Name"
+                                                autoComplete="off"
+                                                className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-slate-800 text-center"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-8">
+                                        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                                            <ShieldCheck className="w-6 h-6 text-indigo-500 mx-auto mb-2" />
+                                            <h3 className="font-semibold text-slate-800 text-sm">ROPA-2009</h3>
+                                            <p className="text-xs text-slate-500">Official Data</p>
+                                        </div>
+                                        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                                            <Calendar className="w-6 h-6 text-indigo-500 mx-auto mb-2" />
+                                            <h3 className="font-semibold text-slate-800 text-sm">April 2008 - Dec 2019</h3>
+                                            <p className="text-xs text-slate-500">Full Period</p>
+                                        </div>
+                                        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                                            <IndianRupee className="w-6 h-6 text-indigo-500 mx-auto mb-2" />
+                                            <h3 className="font-semibold text-slate-800 text-sm">Precise</h3>
+                                            <p className="text-xs text-slate-500">Exact Values</p>
+                                        </div>
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {userName.trim().length > 0 && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="flex flex-col sm:flex-row items-center justify-center gap-4 mx-auto"
+                                            >
+                                                <motion.button
+                                                    initial={{ opacity: 0, scale: 0.9 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.9 }}
+                                                    onClick={() => setView('calculator')}
+                                                    className="group flex items-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-2xl text-xl font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 active:scale-95"
+                                                >
+                                                    Start Calculation
+                                                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                                </motion.button>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+
+                                    <div className="pt-12 border-t border-slate-200 space-y-6">
+                                        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                                            <button 
+                                                onClick={() => setIsAboutOpen(!isAboutOpen)}
+                                                className="w-full p-6 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                                            >
+                                                <div className="flex items-center gap-3 text-indigo-600">
+                                                    <BookOpen className="w-6 h-6" />
+                                                    <h2 className="text-xl font-bold">About This Calculator</h2>
+                                                </div>
+                                                <ChevronDown className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${isAboutOpen ? 'rotate-180' : ''}`} />
+                                            </button>
+                                            
+                                            <AnimatePresence>
+                                                {isAboutOpen && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: 'auto', opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        className="overflow-hidden"
+                                                    >
+                                                        <div className="px-8 pb-8 space-y-6 text-left">
+                                                            <div className="space-y-4 text-slate-600 leading-relaxed">
+                                                                <p>
+                                                                    <span className="font-semibold text-slate-800">ROPA-2009</span> (Revision of Pay and Allowances) rules were implemented for West Bengal Government employees to restructure pay scales and allowances.
+                                                                </p>
+                                                                <p>
+                                                                    This tool is specifically designed to calculate the <span className="font-semibold text-slate-800">DA Arrears</span> accumulated between <span className="font-semibold text-indigo-600">April 2008 and December 2019</span>. During this decade, a significant gap existed between the Dearness Allowance (DA) calculated based on the All India Consumer Price Index (AICPI) and the actual DA released by the State Government.
+                                                                </p>
+                                                                <p>
+                                                                    My purpose is to provide employees with a precise, transparent, and easy-to-use platform to determine their outstanding dues, accounting for yearly increments and individual basic pay variations.
+                                                                </p>
+                                                            </div>
+
+                                                            <div className="pt-4 border-t border-slate-100">
+                                                                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Contact Developer</h3>
+                                                                <a 
+                                                                    href="mailto:loharnimu@gmail.com"
+                                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl transition-all font-medium group"
+                                                                >
+                                                                    <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                                                    loharnimu@gmail.com
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-center gap-2 text-slate-500 font-medium">
+                                                <User className="w-4 h-4" />
+                                                <span>Developed and Designed by <span className="text-indigo-600 font-bold">ASMINJOY</span></span>
+                                            </div>
+                                            <div className="flex items-center justify-center gap-1 text-slate-400 text-sm">
+                                                <Copyright className="w-3 h-3" />
+                                                <span>All Rights Reserved 2026</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <motion.div 
+                                key="calculator"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="text-slate-800 font-sans p-4 md:p-8"
+                            >
+                                <div className="max-w-4xl mx-auto space-y-6">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                                        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-indigo-100 rounded-xl">
+                                                    <User className="w-6 h-6 text-indigo-600" />
+                                                </div>
+                                                <div>
+                                                    <h2 className="text-xl font-bold text-slate-900">{userName}</h2>
+                                                    <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Employee Profile</p>
+                                                </div>
+                                            </div>
+                                            <button 
+                                                onClick={() => setView('home')}
+                                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition-all active:scale-95 group"
+                                            >
+                                                <ArrowRight className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                                                Change Name
+                                            </button>
+                                        </div>
+                                        <div className="h-px bg-slate-100 w-full" />
+                                        <div className="text-center space-y-2">
+                                            <h1 className="text-2xl md:text-3xl font-bold text-indigo-900 flex items-center justify-center gap-2">
+                                                <Calculator className="w-8 h-8 text-indigo-600" />
+                                                DA Arrear Calculator
+                                            </h1>
+                                            <p className="text-slate-500 text-sm md:text-base">
+                                                For West Bengal State Govt. Employees (ROPA-2009)
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="block text-sm font-medium text-slate-700 flex items-center gap-2">
+                                                    <Calendar className="w-4 h-4" />
+                                                    Date of Joining
+                                                </label>
+                                                <input
+                                                    type="date"
+                                                    value={joinDate}
+                                                    onChange={(e) => {
+                                                        setJoinDate(e.target.value);
+                                                        setFirstSalaryMonth('');
+                                                        setIsRetiredBetween('');
+                                                        setRetirementDate('');
+                                                        setIsCalculated(false);
+                                                    }}
+                                                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                                                />
+                                            </div>
+
+                                            {joinDate && new Date(joinDate) > new Date('2008-04-01') && (
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-slate-700">
+                                                        Month of first salary
+                                                    </label>
+                                                    <select
+                                                        value={firstSalaryMonth}
+                                                        onChange={(e) => {
+                                                            setFirstSalaryMonth(e.target.value);
+                                                            setIsCalculated(false);
+                                                        }}
+                                                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                                                    >
+                                                        <option value="">Select Month</option>
+                                                        {Array.from({ length: 12 }, (_, i) => i + 1).map(m => {
+                                                            const joinMonth = parseInt(joinDate.split('-')[1], 10);
+                                                            if (m < joinMonth) return null;
+                                                            const date = new Date(2000, m - 1, 1);
+                                                            return (
+                                                                <option key={m} value={m}>
+                                                                    {date.toLocaleString('default', { month: 'long' })}
+                                                                </option>
+                                                            );
+                                                        })}
+                                                    </select>
+                                                </div>
+                                            )}
+
+                                            {joinDate && new Date(joinDate) <= new Date('2008-04-01') && (
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-slate-700">
+                                                        Retirement date in 1/4/2008 - 31/12/2019
+                                                    </label>
+                                                    <select
+                                                        value={isRetiredBetween}
+                                                        onChange={(e) => {
+                                                            setIsRetiredBetween(e.target.value);
+                                                            setIsCalculated(false);
+                                                        }}
+                                                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                                                    >
+                                                        <option value="">Select</option>
+                                                        <option value="yes">Yes</option>
+                                                        <option value="no">No</option>
+                                                    </select>
+                                                </div>
+                                            )}
+
+                                            {joinDate && new Date(joinDate) <= new Date('2008-04-01') && isRetiredBetween === 'yes' && (
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-slate-700 flex items-center gap-2">
+                                                        <Calendar className="w-4 h-4" />
+                                                        Date of Retirement
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        value={retirementDate}
+                                                        min="2008-04-01"
+                                                        max="2019-12-31"
+                                                        onChange={(e) => {
+                                                            setRetirementDate(e.target.value);
+                                                            setIsCalculated(false);
+                                                        }}
+                                                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {joinDate && (
+                                            <div className="space-y-6 mt-6 border-t border-slate-200 pt-6">
+                                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                                                    <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                                        <Plus className="w-4 h-4" />
+                                                        Add Custom Increment (Before July)
+                                                    </h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                        <input
+                                                            type="date"
+                                                            value={newIncDate}
+                                                            onChange={(e) => setNewIncDate(e.target.value)}
+                                                            min="2008-04-01"
+                                                            max="2019-12-31"
+                                                            className="px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                                                        />
+                                                        <select
+                                                            value={newIncType}
+                                                            onChange={(e) => setNewIncType(e.target.value)}
+                                                            className="px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                                                        >
+                                                            <option value="single_increment">Single Increment</option>
+                                                            <option value="double_increment">Double Increment</option>
+                                                        </select>
+                                                        <button
+                                                            onClick={addCustomIncrement}
+                                                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+                                                        >
+                                                            Add Increment
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <h3 className="text-lg font-medium text-slate-800">Yearly Basic Pay Details</h3>
+                                                {generateTimeline().map((dateStr, index, arr) => {
+                                                    const isFirst = index === 0;
+                                                    const isCustom = customIncrements.some(inc => inc.date === dateStr);
+                                                    const customIncData = customIncrements.find(inc => inc.date === dateStr);
+                                                    const label = `Basic pay on ${new Date(dateStr).toLocaleDateString('en-GB')}`;
+                                                    const nextDate = arr[index + 1];
+                                                    const showIncrement = nextDate && nextDate.endsWith('-07-01');
+
+                                                    return (
+                                                        <div key={dateStr} className={`grid grid-cols-1 md:grid-cols-2 gap-4 items-end p-3 rounded-xl ${isCustom ? 'bg-orange-50 border border-orange-100' : ''}`}>
+                                                            <div className="space-y-2">
+                                                                <label className="block text-sm font-medium text-slate-700 flex justify-between">
+                                                                    <span>{label}</span>
+                                                                    {isCustom && (
+                                                                        <span className="text-xs text-orange-600 font-semibold px-2 py-0.5 bg-orange-100 rounded-full">
+                                                                            Custom: {customIncData?.type === 'single_increment' ? 'Single' : 'Double'}
+                                                                        </span>
+                                                                    )}
+                                                                </label>
+                                                                <div className="flex gap-2">
+                                                                    <input
+                                                                        type="number"
+                                                                        value={paySeries[dateStr] || ''}
+                                                                        readOnly={!isFirst}
+                                                                        onChange={(e) => {
+                                                                            if (isFirst) {
+                                                                                setBasicPay(e.target.value ? Number(e.target.value) : '');
+                                                                                setIsCalculated(false);
+                                                                            }
+                                                                        }}
+                                                                        className={`w-full px-4 py-3 rounded-xl border border-slate-300 transition-all outline-none ${
+                                                                            !isFirst ? 'bg-slate-100 text-slate-600' : 'focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                                                                        }`}
+                                                                        placeholder="Basic Pay"
+                                                                    />
+                                                                    {isCustom && (
+                                                                        <button
+                                                                            onClick={() => removeCustomIncrement(customIncData.id)}
+                                                                            className="p-3 text-red-500 hover:bg-red-50 rounded-xl border border-red-200 transition-colors"
+                                                                        >
+                                                                            <Trash2 className="w-5 h-5" />
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {showIncrement && (
+                                                                <div className="space-y-2">
+                                                                    <label className="block text-sm font-medium text-slate-700">
+                                                                        Increment (Effective next July)
+                                                                    </label>
+                                                                    <select
+                                                                        value={increments[dateStr] || ''}
+                                                                        onChange={(e) => {
+                                                                            setIncrements({
+                                                                                ...increments,
+                                                                                [dateStr]: e.target.value
+                                                                            });
+                                                                            setIsCalculated(false);
+                                                                        }}
+                                                                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="no_increment">No increment</option>
+                                                                        <option value="single_increment">Single increment</option>
+                                                                        <option value="double_increment">Double increment</option>
+                                                                    </select>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                        
+                                        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                                            <button
+                                                onClick={handleCalculate}
+                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 text-white rounded-xl text-lg font-semibold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                                            >
+                                                <Calculator className="w-6 h-6" />
+                                                Calculate Arrear
+                                            </button>
+                                            <button
+                                                onClick={handleReset}
+                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-600 border border-slate-200 rounded-xl text-lg font-semibold hover:bg-slate-50 transition-all active:scale-95"
+                                            >
+                                                <RotateCcw className="w-6 h-6" />
+                                                Reset All
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    {isCalculated && (
+                                        <div className="mt-8 space-y-6">
+                                            <div className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
+                                                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                                                    <div className="space-y-2">
+                                                        <h3 className="text-lg font-semibold text-indigo-900">Total Outstanding Arrear</h3>
+                                                        <p className="text-indigo-600 text-sm">
+                                                            Period: {breakdownData.length > 0 ? `${formatMonthYear(breakdownData[0].month, breakdownData[0].year)} - ${formatMonthYear(breakdownData[breakdownData.length - 1].month, breakdownData[breakdownData.length - 1].year)}` : 'N/A'}
+                                                        </p>
+                                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-indigo-200 text-indigo-700 rounded-full text-xs font-bold shadow-sm">
+                                                            <Calendar className="w-3.5 h-3.5" />
+                                                            Total Duration: {breakdownData.length} Months
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-3xl font-bold text-indigo-700">
+                                                        <IndianRupee className="w-8 h-8" />
+                                                        {totalArrear.toLocaleString('en-IN')}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                                <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                                                    <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                                                        <Info className="w-4 h-4" />
+                                                        Month-wise Breakdown (Editable Basic Pay)
+                                                    </h3>
+                                                    <button
+                                                        onClick={downloadPDF}
+                                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+                                                    >
+                                                        <Download className="w-4 h-4" />
+                                                        Download PDF
+                                                    </button>
+                                                </div>
+                                                <div className="overflow-x-auto">
+                                                    <table className="w-full text-left text-sm">
+                                                        <thead>
+                                                            <tr className="bg-slate-50 text-slate-600">
+                                                                <th className="p-4 font-semibold">Month</th>
+                                                                <th className="p-4 font-semibold">Basic Pay</th>
+                                                                <th className="p-4 font-semibold">State DA (%)</th>
+                                                                <th className="p-4 font-semibold">AICPI (%)</th>
+                                                                <th className="p-4 font-semibold">Difference (%)</th>
+                                                                <th className="p-4 font-semibold text-right">Arrear (Rs.)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-slate-100">
+                                                            {breakdownData.map((row, index) => (
+                                                                <tr key={`${row.year}-${row.month}`} className="hover:bg-slate-50 transition-colors">
+                                                                    <td className="p-4 font-medium text-slate-700">
+                                                                        {formatMonthYear(row.month, row.year)}
+                                                                    </td>
+                                                                    <td className="p-4">
+                                                                        <input
+                                                                            type="number"
+                                                                            value={row.basicPay === 0 ? '' : row.basicPay}
+                                                                            onChange={(e) => handleBreakdownChange(index, e.target.value)}
+                                                                            className="w-32 px-2 py-1 rounded border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                                                                        />
+                                                                    </td>
+                                                                    <td className="p-4 text-slate-600">{row.state}%</td>
+                                                                    <td className="p-4 text-slate-600">{row.aicpi}%</td>
+                                                                    <td className="p-4 text-red-600 font-bold">{row.diffPercent}%</td>
+                                                                    <td className="p-4 text-right font-semibold text-slate-700">
+                                                                        {row.arrearForMonth.toLocaleString('en-IN')}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        }
+
+        try {
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+        } catch (e) {
+            console.error("React Render Error:", e);
+            document.getElementById('root').innerHTML = '<div style="padding: 20px; color: red; font-family: sans-serif;"><h1>Application Error</h1><p>Please check your internet connection or try a different browser.</p><pre style="white-space: pre-wrap; font-size: 12px;">' + e.message + '</pre></div>';
+        }
+    </script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js");
+  });
+}
+</script>
+
+</body>
+</html>
